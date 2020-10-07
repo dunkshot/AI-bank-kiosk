@@ -1,0 +1,53 @@
+.header .title,.staff_view_content .title_area:after,.footer .team .logo:after{background-image:url(../img/sprite/sp_rek.png);-webkit-background-size:231px 147px;background-size:231px 147px}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select,nav,menu{margin:0;padding:0}
+body{font-family:"Noto Sans KR",AppleSDGothicNeo,HelveticaNeue,sans-serif;background-color:#f3d127;color:#222;letter-spacing:-0.5px}
+ul{list-style:none}
+a{text-decoration:none;color:#222}
+em{font-style:normal}
+.blind{position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;margin:-1px;overflow:hidden}
+.header{padding:60px 20px 58px;text-align:center;background-color:#fff}
+.header .title{background-position:0px 0px;display:inline-block;vertical-align:top;width:231px;height:114px;position:relative}
+.header .title:after{content:'';position:absolute;right:46px;top:-37px;width:50px;height:31px;background:url("../img/rek/bubble_face.gif") no-repeat;-webkit-background-size:50px auto;background-size:50px auto}
+.container .title_area{position:relative}
+.container .title_area .title{font-size:24px}
+@media (max-width:350px) {
+	.container .title_area .title{font-size:20px}
+}
+.customer_view_content{padding:48px 10px;text-align:center}
+.customer_view_content .title_area:before{content:'';position:absolute;left:0;right:0;top:0;bottom:0;height:2px;margin:auto;background-color:#222}
+.customer_view_content .title_area .title{position:relative;display:inline-block;padding:0 10px;background-color:#f3d127;vertical-align:top}
+.customer_view_content .task_list_area{padding:32px 0 13px}
+.customer_view_content .task_list{margin:0 -6px}
+.customer_view_content .task_list:after{display:table;clear:both;content:''}
+.customer_view_content .task_list .task_item{float:left;width:33.3333%;padding:0 6px 12px;-webkit-box-sizing:border-box;box-sizing:border-box}
+.customer_view_content .task_list .task_label{display:block}
+.customer_view_content .task_list .task_label img{width:100%;height:auto}
+.customer_view_content .info_message{font-weight:bold;font-size:16px}
+.staff_view_content{padding:84px 10px 0;background:url("../img/rek/bg_zigzag.png") repeat-x 17px 0;-webkit-background-size:38px auto;background-size:38px auto}
+.staff_view_content .content_area{border:2px solid #222;background-color:#fff}
+.staff_view_content .title_area{height:42px;line-height:42px;padding:0 14px;border-bottom:2px solid #222}
+.staff_view_content .title_area:after{background-position:-110px -116px;display:inline-block;vertical-align:top;width:71px;height:18px;content:'';position:absolute;right:14px;top:0;bottom:0;margin:auto 0}
+.staff_view_content .title_area .title{padding-right:71px}
+.staff_view_content .view_area{padding:30px 0 26px;text-align:center}
+.staff_view_content .view_area .waiting_number{font-size:32px;font-weight:300}
+.staff_view_content .view_area .waiting_number .num{position:relative;display:inline-block;margin-left:4px;padding:0 9px;font-weight:900;vertical-align:top}
+.staff_view_content .view_area .waiting_number .num span{position:relative}
+.staff_view_content .view_area .waiting_number .num:before{content:'';position:absolute;left:0;right:0;bottom:0;height:20px;background-color:#f3d127}
+.staff_view_content .view_area .customer_info_list{overflow:hidden;display:inline-block;padding-top:30px;text-align:left;font-size:17px;vertical-align:top}
+@media (max-width:350px) {
+	.staff_view_content .view_area .customer_info_list{font-size:15px}
+}
+.staff_view_content .view_area .customer_info_list .info_item{padding-top:15px}
+.staff_view_content .view_area .customer_info_list .info_item:first-child{padding-top:0}
+.staff_view_content .view_area .customer_info_list .info_title{float:left;width:170px;font-weight:500}
+@media (max-width:350px) {
+	.staff_view_content .view_area .customer_info_list .info_title{width:143px}
+}
+.staff_view_content .view_area .customer_info_list .info_area{overflow:hidden}
+.staff_view_content .view_area .customer_info_list .info_text{display:block;font-weight:bold}
+.staff_view_content .view_area .customer_info_list .info_text + .info_text{padding-top:5px}
+.staff_view_content .view_area .customer_info_list .info_text .percent{font-weight:300}
+.footer{padding:50px 0}
+.footer .team{text-align:center}
+.footer .team .logo{display:inline-block;padding-left:6px;vertical-align:top}
+.footer .team .logo:after{background-position:0px -116px;display:inline-block;vertical-align:top;width:108px;height:31px;content:''}

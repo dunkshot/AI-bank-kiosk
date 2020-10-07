@@ -1,0 +1,239 @@
+<!--
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+PDX-License-Identifier: MIT-0 (For details, see https://github.com/awsdocs/amazon-rekognition-developer-guide/blob/master/LICENSE-SAMPLECODE.)
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi=medium-dpi">
+<title>Rekognition</title>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,400,500,700,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/rek.css" type="text/css">
+<script src="aws-cognito-sdk.min.js"></script>
+<script src="amazon-cognito-identity.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
+<script src="./app.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+</head>
+
+<body>
+ <div id="wrap">
+	 <header class="header">
+     <h1 class="title"><span class="blind">AI 감정분석 번호표 발급기</span></h1>
+     <!-- <br><br><br>
+        <p class="info_message" align="left">(1)  은행 용무를 선택한다.<br>
+        (2)  파일추가(선택)을 눌러 얼굴 사진을 올린다.<br>
+        (3)  5초정도 기다려 결과값을 확인한다.<br>
+        </p></p> -->
+	 </header>
+	 <div class="container">
+		 <div class="customer_view_content">
+			 <div class="title_area">
+				 <h2 class="title">고객 대기표 발급 화면</h2>
+			 </div>
+			 <div class="task_list_area">
+				 <ul class="task_list">
+					 <li class="task_item">
+						 <!-- [D] 활성화 시 이미지 이름 변경 : 이미지명 맨끝에 _on -->
+						 <input type="radio" class="blind" id="which-task1" name="banking_task" value="카드 분실/재발급">
+						 <label for="which-task1" class="task_label"><img src="../img/rek/task_item1.png" alt="카드 분실/재발급"></label>
+					 </li>
+					 <li class="task_item">
+						 <input type="radio" class="blind" id="which-task2" name="banking_task" value="통장 개설">
+						 <label for="which-task2" class="task_label"><img src="../img/rek/task_item2.png" alt="통장 개설"></label>
+					 </li>
+					 <li class="task_item">
+						 <input type="radio" class="blind" id="which-task3" name="banking_task" value="비밀번호 변경">
+						 <label for="which-task3" class="task_label"><img src="../img/rek/task_item3.png" alt="비밀번호 변경"></label>
+					 </li>
+					 <li class="task_item">
+						 <input type="radio" class="blind" id="which-task4" name="banking_task" value="결제일 변경">
+						 <label for="which-task4" class="task_label"><img src="../img/rek/task_item4.png" alt="결제일 변경"></label>
+					 </li>
+					 <li class="task_item">
+						 <input type="radio" class="blind" id="which-task5" name="banking_task" value="분실 신고">
+						 <label for="which-task5" class="task_label"><img src="../img/rek/task_item5.png" alt="분실 신고"></label>
+					 </li>
+					 <li class="task_item">
+						 <input type="radio" class="blind" id="which-task6" name="banking_task" value="인터넷 뱅킹 신청">
+						 <label for="which-task6" class="task_label"><img src="../img/rek/task_item6.png" alt="인터넷 뱅킹신청"></label>
+					 </li>
+         </ul>
+         <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*">
+			 </div>
+       <!-- <button class="button_issue" type="button">얼굴사진을 업로드하여 번호표 발급</button> -->
+       <p class="info_message" align="left"><br>용무 선택 후 얼굴이 나온 사진을 업로드 해주세요. <br>
+         사진은 별도 수집하지 않습니다 :D
+       </p>
+     </div>
+     <p id="opResult"></p>
+	 </div>
+	 <footer class="footer">
+		 <div class="team">team<span class="logo"><span class="blind">(200) OK!</span></span></div>
+	 </footer>
+ </div>
+</body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+	var $task = $('.task_list .task_item');
+
+	$task.on('click',function () {
+
+	    if($(this).is('.is_selected')) {
+	        return false;
+		}
+
+		else {
+	        $(this).addClass('is_selected').find('input').attr('checked',true);
+	        $(this).siblings().removeClass('is_selected').find('input').attr('checked', false);
+
+	        $(this).find('.task_label img').attr('src','../img/rek/task_item' + ($(this).index() + 1) + '_on.png');
+			$(this).siblings().each(function () {
+				$(this).find('.task_label img').attr('src', '../img/rek/task_item' + ($(this).index() + 1) + '.png');
+			});
+	    }
+	})
+</script>
+<script>
+  document.getElementById("fileToUpload").addEventListener("change", function (event) {
+    ProcessImage();
+  }, false);
+
+  var tasks = document.getElementsByName('banking_task');
+  var task_value; // 선택된 checkbox 버튼값 저장
+
+  //Calls DetectFaces API and shows estimated ages of detected faces
+  function DetectFaces(imageData) {
+
+    for(var i=0; i<tasks.length; i++) {
+      if(tasks[i].checked) {
+          task_value = tasks[i].value;
+          console.log(task_value);
+        }
+    }
+
+    AWS.region = "RegionToUse";
+    var rekognition = new AWS.Rekognition();
+    var params = {
+      Image: {
+        Bytes: imageData
+      },
+      Attributes: [
+        'ALL',
+      ]
+    };
+    rekognition.detectFaces(params, function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else {
+        var table = "<div class='staff_view_content'><div class='content_area'><div class='title_area'><h2 class='title'>영업점 행원 PC 안내창</h2></div>";
+            table += '<div class="view_area"><div class="waiting_number">대기번호<em class="num"><span>249</span></em></div>';
+            table += '<ul class="customer_info_list"><li class="info_item"><span class="info_title">영업점에서의 대기시간</span><div class="info_area"><em class="info_text">16분 50초</em></div></li>';
+            table += '<li class="info_item"><span class="info_title">고객님이 보실 업무</span><div class="info_area"><em class="info_text">' + task_value + '</em></div></li>';
+            table += '<li class="info_item"><span class="info_title">고객님의 연령대</span>';
+            // show each face and build out estimated age table
+        for (var i = 0; i < data.FaceDetails.length; i++) {
+          table += '<div class="info_area"><em class="info_text">' + data.FaceDetails[i].AgeRange.Low +
+            ' ~ ' + data.FaceDetails[i].AgeRange.High + ' 세</em></div></li>'; //나이
+            table += '<li class="info_item"><span class="info_title">고객님의 감정 상태</span>';
+            for (var j = 0; j < 8; j++) {
+                if (data.FaceDetails[i].Emotions[j].Confidence > 10) {
+                    switch(data.FaceDetails[i].Emotions[j].Type){
+                        case 'HAPPY':
+                            table += '<div class="info_area"><em class="info_text">😊 행복';
+                            break;
+                        case 'FEAR':
+                            table += '<div class="info_area"><em class="info_text">😱 두려움';
+                            break;
+                        case 'CONFUSED':
+                            table += '<div class="info_area"><em class="info_text">😕 혼란스러움';
+                            break;
+                        case 'SURPRISED':
+                            table += '<div class="info_area"><em class="info_text">😮 놀람';
+                            break;
+                        case 'ANGRY':
+                            table += '<div class="info_area"><em class="info_text">😤 화남';
+                            break;
+                        case 'DISGUSTED':
+                            table += '<div class="info_area"><em class="info_text">🤮 역겨움';
+                            break;
+                        case 'CALM':
+                            table += '<div class="info_area"><em class="info_text">🙂 평화로움';
+                            break;
+                        case 'SAD':
+                            table += '<div class="info_area"><em class="info_text">😥 슬픔';
+                            break;
+                    }
+                    table += ' <span class="percent">('+ data.FaceDetails[i].Emotions[j].Confidence.toFixed(2) + '%)</span></em>';
+                    
+                    /* table += '<tr><td> 고객님의 감정 상태 </td><td>' + data.FaceDetails[i].Emotions[j].Type +
+                        '</td><td>' + data.FaceDetails[i].Emotions[j].Confidence + '%</td></tr>'; */
+                }
+            }
+
+        }
+        table += '</div></li></ul></div></div></div>';
+        document.getElementById("opResult").innerHTML = table;
+      }
+    });
+  }
+  //Loads selected image and unencodes image bytes for Rekognition DetectFaces API
+  function ProcessImage() {
+    AnonLog();
+    var control = document.getElementById("fileToUpload");
+    var file = control.files[0];
+
+    // Load base64 encoded image
+    var reader = new FileReader();
+    reader.onload = (function (theFile) {
+      return function (e) {
+        var img = document.createElement('img');
+        var image = null;
+        img.src = e.target.result;
+        var jpg = true;
+        try {
+          image = atob(e.target.result.split("data:image/jpeg;base64,")[1]);
+
+        } catch (e) {
+          jpg = false;
+        }
+        if (jpg == false) {
+          try {
+            image = atob(e.target.result.split("data:image/png;base64,")[1]);
+          } catch (e) {
+            alert("Not an image file Rekognition can process");
+            return;
+          }
+        }
+        //unencode image bytes for Rekognition DetectFaces API
+        var length = image.length;
+        imageBytes = new ArrayBuffer(length);
+        var ua = new Uint8Array(imageBytes);
+        for (var i = 0; i < length; i++) {
+          ua[i] = image.charCodeAt(i);
+        }
+        //Call Rekognition
+        DetectFaces(imageBytes);
+      };
+    })(file);
+    reader.readAsDataURL(file);
+  }
+  //Provides anonymous log on to AWS services
+  function AnonLog() {
+
+    // Configure the credentials provider to use your identity pool
+    AWS.config.region = 'ap-northeast-2'; // Region
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'ap-northeast-2:df01be78-6753-4741-9107-68d3af380a96',
+    });
+    // Make the call to obtain credentials
+    AWS.config.credentials.get(function () {
+      // Credentials will be available when this function is called.
+      var accessKeyId = AWS.config.credentials.accessKeyId;
+      var secretAccessKey = AWS.config.credentials.secretAccessKey;
+      var sessionToken = AWS.config.credentials.sessionToken;
+    });
+  }
+</script>
+</html>
